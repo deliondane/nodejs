@@ -4,13 +4,16 @@ const port = 5000;
 const cors = require("cors")
 //만들어 놨던 유저모델 객체를 가져옴
 const { User } = require("./models/User");
+//config디렉터리의 dev를 가져옴
+const config = require("./config/dev");
 
 app.use(cors())
 app.use(express.json()) //body-parser가 express에 내장되어있으므로 바로 사용 가능
 
 //mongoose를 이용해서 앱과 mongoDB를 연결
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://jmk255:abcd1234@cluster0.w6pxy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+//mongoURI값을 전달
+mongoose.connect('config.mongoURI')
   .then(() => console.log("MongoDB Connected..."))
   .catch(err => console.log(err))
 
