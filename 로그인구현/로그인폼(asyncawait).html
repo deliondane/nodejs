@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인폼</title>
+  <script src="https://kit.fontawesome.com/632d3e2496.js" crossorigin="anonymous"></script>
+  <style>
+    *{margin:0; padding:0; box-sizing: border-box;}
+    a{text-decoration: none; color:inherit;}
+    body{
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      color:#666;
+      font-size:16px;
+    }
+
+    .login{
+      display:none;
+      position:fixed;
+      /*브라우저 사이즈로 늘려줌*/
+      top:0; left:0; bottom:0; right:0;
+      background-color:rgba(0,0,0,0.8);
+    }
+
+    .login > .container{
+      width:300px;
+      height:300px;
+      background-color: #fff;
+      position:absolute;
+      left:50%;
+      top:100px;
+      transform:translateX(-50%);
+    }
+
+    .close{
+      height:40px;
+      border-bottom:1px solid #999;
+      position:relative;
+    }
+
+    .close > a{
+      font-size:20px;
+      position:absolute;
+      right:10px;
+      top:8px;
+    }
+
+    form{
+      padding:20px 40px;
+    }
+    label{
+      line-height:1.6;
+    }
+    input[type=text]{
+      width:220px;
+      height:40px;
+      margin-bottom:20px;
+      background-color:#f1f1f1;
+      border:1px solid #999;
+      text-indent: 10px;
+    }
+    button{
+      width:220px;
+      height:40px;
+      background-color:#111;
+      color:#fff;
+      font-size:16px;
+      border:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="login">
+    <div class="container">
+      <!--클로즈 버튼을 클릭하면 pClose함수가 호출-->
+      <div class="close" onclick="pClose(event)">
+        <a href="#"><i class="fas fa-times"></i></a>
+      </div>
+      <form>
+        <p>
+          <label for="user">사용자명 또는 이메일 주소</label><br>
+          <input type="text" id="user" name="user">
+        </p>
+        <p>
+          <label for="pw">암호</label><br>
+          <input type="text" id="pw" name="pw">
+        </p>
+        <button type="submit">로그인</button>
+      </form>
+    </div>
+  </div>
+
+  <section class="content">
+    <h1>로그인 입력창을 만들어 보세요</h1>
+    <!--버튼을 클릭하면 popup함수가 호출-->
+    <button onclick="popup()">Login</button>
+    <p id="message"></p>
+  </section>
+  <script>
+    //로그인 폼을 선택
+    const login = document.querySelector(".login");
+
+    function popup(){//popup함수 생성
+      //로그인의 display값을 block으로 변경하여 화면에 표시
+      login.style.display = "block";
+    }
+    
+    //pClose함수 생성
+    function pClose(event){
+      event.preventDefault();//링크기능 제거
+      //로그인을 화면에서 제거
+      login.style.display = "none";
+    }
+
+    //.login영역을 클릭하면 로그인이 닫히는 구현
+    window.addEventListener("click",(e) => {
+      //console.log(e.target)//클릭한 요소를 읽어올 수 있다.
+      if(e.target == login){//클릭한 요소가 .login요소면 실행
+        login.style.display = "none";//login창을 화면에서 제거
+      }
+    });
+
+    //로그인 구현(서버연결)
+    login.addEventListener("submit", async (e) => {
+      e.preventDefault();//폼 제출 기본 동작 방지
+
+      //user와 pw는 각각 사용자 이름과 비밀번호 입력 필드의 값을 가져옵니다.
+      const user = document.getElementById("user").value;
+      const pw = document.getElementById("pw").value;
+
+      //fetch API로 서버와 연결
+      const response = await fetch(
+        "http://localhost:3000/login",
+        {
+          method: "POST",
+          headers:{
+            //요청 본문이 JSON 형식임을 알립니다.
+            "Content-Type": "application/json"
+          },
+          //body에 사용자 이름과 비밀번호를 JSON형식으로 변환하여 포함합니다.
+          body: JSON.stringify({user, pw})
+        }
+      )
+      
+      //응답을 JSON형식으로 변환하여 data에 저장
+      const data = await response.json();
+      
+      //응답받은 메시지를 담을 요소
+      const message = document.getElementById("message");
+      
+      if(response.ok){//응답이 성공적이면 if문 실행
+        if(data.success){ //data.success가 true인경우(로그인 성공)
+          login.style.display = "none";//로그인 폼을 숨기고
+          message.textContent = data.message;//data.message를 message요소에 텍스트로 넣어줌
+        }else{//실패한 경우
+          login.style.display = "none";//로그인 폼을 숨기고
+          message.textContent = data.message;//data.message를 message요소에 텍스트로 넣어줌
+        }
+      }else{//응답에 실패했을 경우
+        login.style.display = "none";//로그인 폼을 숨기고
+        message.textContent = `로그인 실패: ${data.message || '알수없는 오류'}`;//메시지 또는 "알수없는 오류"를 message요소에 텍스트로 넣어줌
+      }
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>구글 지도 API</title>
+    <script
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaItQDClGG6CpAYBZodnqWV7eeZ1KI-xo&callback=initMap"
+    ></script>
+  </head>
+  <body>
+    <div id="map" style="height: 600px"></div>
+    <script>
+      //initMap을 함수명으로 사용했기 때문에, window 객체의 initMap 속성에 콜백 함수를 할당하고 있습니다
+      window.initMap = function () {
+        //#map요소를 google.maps.Map() 생성자의 인자로 넘겨서 호출하면 구글 지도 객체를 얻을 수 있습니다
+        const map = new google.maps.Map(document.getElementById("map"), {
+          //두 번째 인자로 구글 지도를 어떻게 보여줄건지 옵션을 넘길 수 있다
+          //center 옵션에 지도의 중앙 위치의 위도 경도를 설정해주고, zoom 옵션에 지도를 얼마나 가깝게 볼 건지를 설정해줄 수 있습니다
+          center: { lat: 37.317289, lng: 126.838971 },
+          zoom: 16,
+        });
+
+        //마커로 위치 표시
+        const malls = [
+          {label: 'A', name: '중앙역', lat: 37.316308, lng: 126.838499},
+          {label: 'B', name: '롯데백화점', lat: 37.318169, lng: 126.834509},
+          {label: 'C', name: '한국 호텔 전문학교', lat: 37.317126, lng: 126.840923}
+        ];
+        
+
+      };
+    </script>
+  </body>
+</html>
+
